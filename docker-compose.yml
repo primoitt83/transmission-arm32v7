@@ -1,25 +1,23 @@
-version: '3.5'
 services:
   transmission:
     build:
       context: ./build
       dockerfile: Dockerfile
     container_name: transmission
-    restart: always  
-    ports:
-      - 9091:9091 ## web-service
-      - 51413:51413/udp ## tranmission port
+    restart: always
     volumes:
-      - ./config:/var/lib/transmission/config/settings.json
-      - ./downloads:/var/lib/transmission/downloads
+      - ./config:/config
+      - ./downloads:/downloads
+      - ./watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
     networks:
-      transmission:
+      - transmission
     logging:
       options:
         max-size: 100M
-    
-volumes:
-  transmission-config:
 
 networks:
   transmission:

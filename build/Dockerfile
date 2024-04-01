@@ -6,25 +6,23 @@ RUN apk update && \
     rm -rf /root/.cache && mkdir -p /root/.cache && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
 
-ENV APP_NAME="transmission-daemon-app" \
-    APP_BIN="transmission-daemon" \
-    APP_USERNAME="transmission" \
-    APP_GROUPNAME="transmission"
+RUN mkdir -p /config && \
+    mkdir -p /downloads && \
+    mkdir -p /watch
 
-COPY run.sh /app/
-COPY settings.json /app/settings.json.default
-RUN chown -R root:root /app
-RUN chmod -R 0744 /app
-RUN chmod 0755 /app/run.sh
+COPY settings.json /config
 
-HEALTHCHECK --interval=60s --timeout=15s --start-period=120s \
-    CMD curl -L 'https://api.ipify.org'
+RUN chown transmission:transmission -R /config && \
+    chown transmission:transmission -R /downloads && \
+    chown transmission:transmission -R /watch
 
-VOLUME ["/var/lib/transmission/config", "/var/lib/transmission/downloads"]
+RUN chmod 775 -R /config && \
+    chmod 775 -R /downloads && \
+    chmod 775 -R /watch
+
+VOLUME ["/config", "/downloads", "/watch"]
 
 EXPOSE 9091
+EXPOSE 51413
 
-WORKDIR /var/lib/transmission
-
-ENTRYPOINT ["/app/run.sh"]
-CMD ["transmission-daemon", "--foreground", "--config-dir", "/var/lib/transmission/config"]
+CMD ["transmission-daemon", "--foreground", "--config-dir", "/config", "--log-level=info"]
