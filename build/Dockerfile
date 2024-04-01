@@ -1,7 +1,7 @@
 FROM arm32v7/alpine:3.19.1
 
 RUN apk update && \
-    apk add transmission-daemon~=4.0.5 && \
+    apk add transmission-daemon~=4.0.5 bash && \
     # clean-up
     rm -rf /root/.cache && mkdir -p /root/.cache && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
@@ -27,4 +27,4 @@ EXPOSE 9091
 WORKDIR /var/lib/transmission
 
 ENTRYPOINT ["/app/run.sh"]
-CMD ["transmission-daemon-app", "--foreground", "--config-dir", "/var/lib/transmission/config"]
+CMD ["transmission-daemon", "--foreground", "--config-dir", "/var/lib/transmission/config"]

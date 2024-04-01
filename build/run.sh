@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Exit on error
-set -e
+#set -e
 
 # Load functions
-source /scripts/update-app-user-uid-gid.sh
+#source /scripts/update-app-user-uid-gid.sh
 
 # Debug output
 set -x
 
-update_user_gid $APP_USERNAME $APP_GROUPNAME $APP_GID
-update_user_uid $APP_USERNAME $APP_UID
+# update_user_gid $APP_USERNAME $APP_GROUPNAME $APP_GID
+# update_user_uid $APP_USERNAME $APP_UID
 
 if [ -n "$NET_GW" ]; then
   ip route del default || true
@@ -27,7 +27,7 @@ if [ "$1" = $APP_NAME ]; then
 
   chown $APP_USERNAME /var/lib/transmission /var/lib/transmission/downloads /var/lib/transmission/watch
   chown -R $APP_USERNAME /var/run/transmission /var/lib/transmission/config
-  exec /scripts/app-entrypoint.sh $APP_BIN "$@"
+  #exec /scripts/app-entrypoint.sh $APP_BIN "$@"
 fi
 
 exec "$@"

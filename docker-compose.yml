@@ -7,12 +7,10 @@ services:
     container_name: transmission
     restart: always  
     ports:
-      - 9091:9091      
-    environment:
-     - APP_UID=1000
-     - APP_GID=1000
+      - 9091:9091 ## web-service
+      - 51413:51413/udp ## tranmission port
     volumes:
-      - transmission-config:/var/lib/transmission/config
+      - ./config:/var/lib/transmission/config/settings.json
       - ./downloads:/var/lib/transmission/downloads
     networks:
       transmission:

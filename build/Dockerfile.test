@@ -1,7 +1,7 @@
 FROM arm32v7/alpine:3.19.1
 
 RUN apk update && \
-    apk add transmission-daemon~=4.0.5 && \
+    apk add transmission-daemon~=4.0.5 bash && \
     # clean-up
     rm -rf /root/.cache && mkdir -p /root/.cache && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
