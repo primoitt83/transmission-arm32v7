@@ -1,0 +1,33 @@
+FROM arm32v7/alpine:3.19.1
+
+RUN apk update && \
+    apk add transmission-daemon~=4.0.5 && \
+    # clean-up
+    rm -rf /root/.cache && mkdir -p /root/.cache && \
+    rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
+
+ENV APP_NAME="transmission-daemon-app" \
+    APP_BIN="transmission-daemon" \
+    APP_USERNAME="transmission" \
+    APP_GROUPNAME="transmission"
+
+ADD ${PWD}/scripts /scripts
+RUN chmod +x /scripts/.
+COPY run.sh /app/
+COPY settings.json /app/settings.json.default
+RUN chown -R root:root /app
+RUN chmod -R 0744 /app
+RUN chmod 0755 /app/run.sh
+
+HEALTHCHECK --interval=60s --timeout=15s --start-period=120s \
+    CMD curl -L 'https://api.ipify.org'
+
+VOLUME ["/var/lib/transmission/config", "/var/lib/transmission/downloads"]
+
+EXPOSE 9091
+
+WORKDIR /var/lib/transmission
+
+CMD sleep 100000000
+#ENTRYPOINT ["/app/run.sh"]
+#CMD ["transmission-daemon-app", "--foreground", "--config-dir", "/var/lib/transmission/config"]
