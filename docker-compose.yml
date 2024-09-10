@@ -1,3 +1,4 @@
+version: '3.5'
 services:
   transmission:
     build:
@@ -5,19 +6,25 @@ services:
       dockerfile: Dockerfile
     container_name: transmission
     restart: always
-    volumes:
-      - ./config:/config
-      - ./downloads:/downloads
-      - ./watch:/watch
+    #entrypoint: "sleep 10000000"  
     ports:
-      - 9091:9091
-      - 51413:51413
-      - 51413:51413/udp
+      - 9091:9091 ## web-service
+      - 51413:51413/udp ## transmission port
+    volumes:
+      - ./config:/var/lib/transmission/config
+      - ./downloads:/var/lib/transmission/downloads
+      - ./watch:/var/lib/transmission/watch
+    user: 1000:1000      
+    environment:
+      - APP_USERNAME=transmission
+      - APP_GROUPNAME=transmission
+      - PUID=1000
+      - PGID=1000
     networks:
-      - transmission
+      docker:
     logging:
       options:
         max-size: 100M
-
+    
 networks:
-  transmission:
+  docker:
